@@ -1,24 +1,13 @@
 import fetchData from '../halpers/fetchData'
+import {ProductQuery} from './HomepageQueries'
 
-export const getHomepagePosts = async () => {
-  const data = await fetchData(
-    `
-        query HomepagePosts {
-            posts {
-                id
-                title
-                slug
-                featured_image {
-                  id
-                }
-                body
-            }
-        }
-        `,
+
+export const getProductQuery = async () => {
+  const data = await fetchData( 
+      ProductQuery,
     {
       variables: {},
     }
   )
-
-  return data.data.posts
+  return data.data.products
 }
