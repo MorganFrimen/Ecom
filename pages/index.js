@@ -4,15 +4,11 @@ import { getProductQuery } from '../queries/queries'
 import ProductCard from '../components/ProductCard'
 
 const Home = () => {
-
-
   const {
     status,
     data: products,
     isSuccess,
   } = useQuery('products', async () => await getProductQuery())
-
-  console.log(products)
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
