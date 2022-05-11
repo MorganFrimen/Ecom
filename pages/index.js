@@ -1,34 +1,67 @@
 import Head from 'next/head'
 import { useQuery } from 'react-query'
-import { getProductQuery } from '../queries/queries'
+import { getProductQuery, getCategoriesQuery } from '../queries/queries'
 import ProductCard from '../components/ProductCard'
+import Filters from '../components/Filters'
+import { useEffect, useState } from 'react'
 
 const Home = () => {
-  const {
-    status,
-    data: products,
-    isSuccess,
-  } = useQuery('products', async () => await getProductQuery())
+  const [selectedCategories, setSelectedCategories] = useState([])
+  const { data: products, isSuccess } = useQuery(
+    'products',
+    async () => await getProductQuery()
+  )
+  const { data: categories, isSuccess: categoriesSuccess } = useQuery(
+    'categories',
+    async () => await getCategoriesQuery()
+  )
+
+  const getSelectedCategories = (category) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(
+        selectedCategories.filter((item) => item !== category)
+      )
+      return
+    }
+    setSelectedCategories([...selectedCategories, category])
+  }
+
+  useEffect(() => {
+    console.log(selectedCategories)
+  }, [selectedCategories])
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+    <div className="max-w-2x1 mx-auto py-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-4 ">
       <Head>
-        <title>Create Next App</title>
+        <title>E-commerce-Site</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
+      <h2 className="text-2x1 font-extrabold tracking-tight text-gray-900 ">
+        Lastet products
+      </h2>
+
+      {categoriesSuccess && (
+        <Filters
+          categories={categories}
+          getSelectedCategories={getSelectedCategories}
+        />
+      )}
+
+      <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8 ">
         {isSuccess &&
           products.map((product) => (
             <ProductCard
               product_name={product.product_name}
               image={product.product_image.id}
               price={product.price}
-              category={product.products_category[0].categories_id.category_name}
+              category={
+                product.products_category[0].categories_id.category_name
+              }
               key={product.id}
             />
           ))}
-      </main>
+      </div>
     </div>
   )
 }
