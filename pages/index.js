@@ -1,15 +1,24 @@
 import Head from 'next/head'
 import { useQuery } from 'react-query'
-import { getProductQuery, getCategoriesQuery } from '../queries/queries'
+import { getProductQuery, getCategoriesQuery, getFiltersProductsQuery } from '../queries/queries'
 import ProductCard from '../components/ProductCard'
 import Filters from '../components/Filters'
 import { useEffect, useState } from 'react'
 
+async function handleProductFiltering({queryKey}){
+  // console.log(queryKey)
+  const[_] = queryKey
+  if(_.length) {
+    return await getFiltersProductsQuery(queryKey[0])
+  }
+  return await getProductQuery()
+}
+
 const Home = () => {
   const [selectedCategories, setSelectedCategories] = useState([])
   const { data: products, isSuccess } = useQuery(
-    'products',
-    async () => await getProductQuery()
+    [selectedCategories],
+    handleProductFiltering
   )
   const { data: categories, isSuccess: categoriesSuccess } = useQuery(
     'categories',
@@ -26,9 +35,9 @@ const Home = () => {
     setSelectedCategories([...selectedCategories, category])
   }
 
-  useEffect(() => {
-    console.log(selectedCategories)
-  }, [selectedCategories])
+  // useEffect(() => {
+  //   console.log(selectedCategories)
+  // }, [selectedCategories])
 
   return (
     <div className="max-w-2x1 mx-auto py-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-4 ">

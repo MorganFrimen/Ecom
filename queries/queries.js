@@ -23,5 +23,5 @@ export const getFiltersProductsQuery = async (categories) => {
   const data = await fetchData(FiltersProductsQuery, {
     variables: { categories },
   })
-  return data.data.categories
+  return data.data.products
 }
