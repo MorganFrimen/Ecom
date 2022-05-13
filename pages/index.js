@@ -1,17 +1,23 @@
 import Head from 'next/head'
 import { useQuery } from 'react-query'
-import { getProductQuery, getCategoriesQuery, getFiltersProductsQuery } from '../queries/queries'
+import getData from '../queries/getData'
 import ProductCard from '../components/ProductCard'
 import Filters from '../components/Filters'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import {
+  CategoriesQuery,
+  FiltersProductsQuery,
+  ProductQuery,
+} from '../queries/HomepageQueries'
 
-async function handleProductFiltering({queryKey}){
-  // console.log(queryKey)
-  const[_] = queryKey
-  if(_.length) {
-    return await getFiltersProductsQuery(queryKey[0])
+async function handleProductFiltering({ queryKey }) {
+  const [_] = queryKey
+  if (_.length) {
+    return await getData(FiltersProductsQuery, 'products', {
+      categories: queryKey[0],
+    })
   }
-  return await getProductQuery()
+  return await getData(ProductQuery, 'products')
 }
 
 const Home = () => {
@@ -22,7 +28,7 @@ const Home = () => {
   )
   const { data: categories, isSuccess: categoriesSuccess } = useQuery(
     'categories',
-    async () => await getCategoriesQuery()
+    async () => await getData(CategoriesQuery, 'categories')
   )
 
   const getSelectedCategories = (category) => {
@@ -34,10 +40,6 @@ const Home = () => {
     }
     setSelectedCategories([...selectedCategories, category])
   }
-
-  // useEffect(() => {
-  //   console.log(selectedCategories)
-  // }, [selectedCategories])
 
   return (
     <div className="max-w-2x1 mx-auto py-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-4 ">
@@ -64,10 +66,9 @@ const Home = () => {
               product_name={product.product_name}
               image={product.product_image.id}
               price={product.price}
-              category={
-                product.products_category[0].categories_id.category_name
-              }
+              category={product.products_category[0].categories_id}
               key={product.id}
+              slug={product.slug}
             />
           ))}
       </div>

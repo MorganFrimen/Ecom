@@ -4,6 +4,7 @@ export const ProductQuery = `
       id
       product_name
       price
+      slug
       product_image{
         id
       }
@@ -11,6 +12,7 @@ export const ProductQuery = `
         categories_id{
           id
           category_name
+          slug
         }
       }
     }
@@ -30,6 +32,7 @@ query ($categories: [Float]) {
   products (filter:{products_category:{categories_id: {id: {_in: $categories }}}}) {
     product_name
     price
+    slug
     product_image{
       id
     }
@@ -37,6 +40,7 @@ query ($categories: [Float]) {
       categories_id{
         id
         category_name
+        slug
       }
     }
   }
