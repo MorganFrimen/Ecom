@@ -9,6 +9,22 @@ query ($product_slug: String) {
       product_image{
         id
       }
+      avalibale_color{
+        product_colors_id{
+          id
+          color_value
+          color_name
+        }
+      }
+      avalibal_sizes{
+        product_sizes_id{
+          id
+          long_title
+          short_title
+        }
+      }
+      show_sizes
+      show_colors
       products_category{
         categories_id{
           id
